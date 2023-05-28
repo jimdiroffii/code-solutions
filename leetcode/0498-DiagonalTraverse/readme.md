@@ -1,10 +1,8 @@
 #498. Diagonal Traverse
 
-Given an m x n matrix mat, return an array of all the elements of the array in a diagonal order.
+Given an m x n matrix `mat`, return an array of all the elements of the array in a diagonal order.
 
 Example 1:
-<img alt="" src="https://assets.leetcode.com/uploads/2021/04/10/diag1-grid.jpg" style="width: 334px; height: 334px;">
-
 ![diag](https://assets.leetcode.com/uploads/2021/04/10/diag1-grid.jpg)
 
 ```
