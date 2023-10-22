@@ -88,7 +88,7 @@ void euler13()
     // Large sum
     // Work out the first ten digits of the following one-hundred 50-digit numbers
     // *numbers in euler13.txt
-    std::vector<std::string> vNums = readFileToVector("euler13b.txt");
+    std::vector<std::string> vNums = readFileToVector("euler13.txt");
     long long sum{};
     std::string finalSum{};
 
@@ -126,13 +126,14 @@ void euler13()
         {
             int m = sum % 10;                      // get last digit of sum
             finalSum.insert(0, std::to_string(m)); // store the last digit of sum into our final string
-            sum /= 10;                             // remove last digit from sum
-            sum = sum + (10 - (sum % 10));         // Bug, this always equals 10
+            sum -= m;      
+            sum = sum / 10;                       // remove last digit from sum
+            //sum = sum + (10 - (sum % 10));         // Bug, this always equals 10
         }
     }
 
-    if (sum >= 10) {
-        finalSum.insert(0, std::to_string(sum / 10));
+    if (sum > 0) {
+        finalSum.insert(0, std::to_string(sum));
     }
     std::cout << "sum: " << finalSum << "\n";
 }
