@@ -70,6 +70,85 @@ std::string mapCaesar(const std::string& cipher, const std::map<char, char> key)
   return result;
 }
 
+/* Brute Force Tranposition */
+void replaceSpecialSequence(std::string& input) {
+  const std::string specialSequence = "␣"; // Define the special sequence
+  size_t pos = 0;
+  while ((pos = input.find(specialSequence, pos)) != std::string::npos) {
+    input.replace(pos, specialSequence.length(), "_"); // Replace with underscore
+    pos += 1; // Move past the underscore
+  }
+}
+
+void print2DVector(const std::vector<std::vector<char>>& vec) {
+  for (const auto& row : vec) {
+    std::cout << "{";
+    for (size_t i = 0; i < row.size(); ++i) {
+      std::cout << row[i];
+      if (i < row.size() - 1) {
+        std::cout << ",";
+      }
+    }
+    std::cout << "}" << std::endl; // Print each row on a new line
+  }
+}
+
+std::vector<std::vector<char>> rearrangeColumns(const std::vector<std::vector<char>>& matrix) {
+  const std::vector<int> newOrder = { 2, 0, 3, 5, 1, 4 };
+  std::vector<std::vector<char>> rearranged(matrix.size(), std::vector<char>(matrix[0].size(), ' '));
+
+  for (size_t row = 0; row < matrix.size(); ++row) {
+    for (size_t col = 0; col < matrix[0].size(); ++col) {
+      rearranged[row][col] = matrix[row][newOrder[col]];
+    }
+  }
+
+  return rearranged;
+}
+
+std::string buildStringFrom2DArray(const std::vector<std::vector<char>>& matrix) {
+  std::string result;
+  for (const auto& row : matrix) {
+    for (char ch : row) {
+      if (ch != ' ') { // Skip spaces if you don't want them in the final string
+        result += ch;
+      }
+    }
+  }
+  return result;
+}
+
+void transpositionIteration(std::string input) {
+  replaceSpecialSequence(input); // Replace special sequences in the input
+  std::vector<std::vector<char>> result{};
+  size_t numColumns = 1;
+  while (true) {
+    size_t numRows = (input.length() + numColumns - 1) / numColumns; // Ceiling division
+    std::vector<std::vector<char>> matrix(numRows, std::vector<char>(numColumns, ' ')); // Fill with spaces for alignment
+
+    for (size_t i = 0; i < input.size(); ++i) {
+      size_t row = i % numRows;
+      size_t col = i / numRows;
+      matrix[row][col] = input[i];
+    }
+
+    print2DVector(matrix);
+
+    char choice;
+    std::cout << "Continue with the next iteration? (y/n): ";
+    std::cin >> choice;
+    if (choice != 'y') {
+      result = matrix;
+      break;
+    }
+
+    ++numColumns;
+  }
+
+  result = rearrangeColumns(result);
+  print2DVector(result);
+  std::cout << buildStringFrom2DArray(result);
+}
 
 int main()
 {
@@ -122,71 +201,9 @@ int main()
 
   {
     std::string cipher3 = "rs␣r␣enigm␣_aierhe␣i␣gluucsclhetersnti␣a␣rla␣t␣riayrgpetai␣diu␣Fawhiho}sipatfy␣ihr␣a␣rfa␣pes␣etohwrea␣octtonee␣eihetTpxcdeghi␣ro␣ped␣yGaledemXToneepetlhtseghectnatanst␣ripctiharaics␣foarscee␣ebrn␣te␣doemrr␣c__ltcsaicsa␣coo␣wbrn␣_aranmeibti,haarhra,sipklti␣ci.ctst␣a␣lxtcnaenlkLeoakelXpohry␣patakrntd␣cilxsU␣inehe␣cwthers␣rpo␣narahhtr␣aienlsrtrr␣o.{rd___nXnti␣_ornrtoyrgoors␣te.ksip␣_crs␣_c␣pohelhgctn␣ie␣erntatecg␣teeeAsuvesuX";
-    //std::string cipher3 = "rs_r_enigm__aierhe_i_gluucsclhetersnti_a_rla_t_riayrgpetai_diu_Fawhiho}sipatfy_ihr_a_rfa_pes_etohwrea_octtonee_eihetTpxcdeghi_ro_ped_yGaledemXToneepetlhtseghectnatanst_ripctiharaics_foarscee_ebrn_te_doemrr_c__ltcsaicsa_coo_wbrn__aranmeibti,haarhra,sipklti_ci.ctst_a_lxtcnaenlkLeoakelXpohry_patakrntd_cilxsU_inehe_cwthers_rpo_narahhtr_aienlsrtrr_o.{rd___nXnti__ornrtoyrgoors_te.ksip__crs__c_pohelhgctn_ie_erntatecg_teeeAsuvesuX";
-    int lines{};
-    int counter{};
-    std::string line{};
-    
-    int currCol = 0;
-    int currRow = 0;
-    int rowDepth = 30;
-    std::vector<std::vector<char>> transpositionArray{};
-
-    for (auto it = cipher3.begin(); it != cipher3.end(); ++it) {
-      switch (*it) {
-      case 'F':
-      case 'L':
-      case 'A':
-      case 'G':
-      case '{':
-      case '}':
-        std::cout << "char: " << *it << " pos: " << counter << '\n';
-      }
-
-      ++counter;
-
-
-      /*if (*it == '�') {
-        it += 2;
-        continue;
-      }
-
-      if (currCol == 0) {
-        transpositionArray.push_back(std::vector<char>{*it});
-      }
-      else {
-        transpositionArray.at(currRow).push_back(*it);
-      }
-
-      ++currRow;
-      if (currRow >= rowDepth) {
-        currRow = 0;
-        ++currCol;
-      }*/
-      
-      /*if ((char) *it != '_') {
-        line += *it;
-        ++counter;
-      }
-
-      if (counter == 6) {
-        std::cout << "line: " << lines << " " << line << '\n';
-        line = "";
-        ++lines;
-        counter = 0;
-      }*/
-    }
-
-    for (std::vector v : transpositionArray) {
-      for (auto ch : v) {
-        std::cout << ch;
-      }
-      std::cout << '\n';
-    }
-
-    //std::cout << "line: " << lines << " " << line << '\n';
-    //std::cout << "lines: " << lines;
+    transpositionIteration(cipher3); // iterate to six columns to solve the puzzle
   }
+
 
   /*std::string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   int i = 1;
