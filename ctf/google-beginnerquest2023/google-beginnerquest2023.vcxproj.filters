@@ -18,5 +18,13 @@
     <ClCompile Include="google-beginnerquest2023.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="p0000.hpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="p1837.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

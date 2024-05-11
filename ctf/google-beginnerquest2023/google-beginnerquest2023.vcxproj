@@ -128,7 +128,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="p0000.hpp" />
     <ClCompile Include="google-beginnerquest2023.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="p1837.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
