@@ -25,6 +25,11 @@ long long *factor(long long n, unsigned int size, bool_t isPrimeCheck)
     return NULL;
   }
 
+  if (isPrimeCheck == TRUE)
+  {
+    factors[0] = 0; // Assume prime
+  }
+
   while (divisor < quotient)
   {
     if (n % divisor == 0 && isPrimeCheck == TRUE)
@@ -113,6 +118,7 @@ int main()
   long long *primeFactors = NULL;
   for (size_t i = 0; i < size; i++)
   {
+    free(primeFactors);
     primeFactors = factor(factors[i], size, TRUE);
     if (primeFactors == NULL)
     {
