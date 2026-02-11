@@ -3,16 +3,21 @@
 #include <errno.h>
 #include <limits.h>
 #include <ctype.h>
+#include <string.h>
 
 #define SUCCESS             0
+#define FAILURE             1
 #define ERR_ARGV_NULL       2
 #define ERR_NEGATIVE        3
 #define ERR_MISSING_ARG     4
 #define ERR_NOT_A_NUMBER    5
 #define ERR_OUT_OF_RANGE    6
-#define ERR_CONVERSION      7
+#define ERR_STRING          7
 #define ERR_TRAILING_CHARS  8
 #define ERR_TOO_MANY_ARG    9
+#define ERR_BUFF_OVERFLOW   10
+
+#define MAX_DIGITS 1000000
 
 void usageMsg(char *argv[]) {
   const char *program = "./program";
@@ -43,11 +48,47 @@ int validateInput(int argc, char* argv[], unsigned long *outValue) {
 
   if (s == endptr) return ERR_NOT_A_NUMBER;
   if (errno == ERANGE) return ERR_OUT_OF_RANGE;
-  if (errno != 0) return ERR_CONVERSION;
+  if (errno != 0) return ERR_STRING;
   if (*endptr != '\0') return ERR_TRAILING_CHARS;
 
   *outValue = input;
   return SUCCESS;
+}
+
+int factorialDigitSum(unsigned long n, unsigned long *result) {
+  if (n == 0 || n == 1) {
+    *result = 1;
+    return 0;
+  }
+
+  int digits[MAX_DIGITS] = {0};
+
+  int len = 1;
+  digits[0] = 1;
+
+  for (int i = 0; i < n; ++i) {
+    int carry = 0;
+
+    for (int j = 0; j < len; ++j) {
+      int x = digits[j] * (i + 1) + carry;
+      digits[j] = x % 10;
+      carry = x / 10;
+    }
+    
+    while (carry > 0) {
+      if (len >= MAX_DIGITS) return ERR_BUFF_OVERFLOW;
+      digits[len++] = carry % 10;
+      carry /= 10;
+    }
+  }
+
+  unsigned long sum = 0;
+  for (int i = 0; i < len; ++i) {
+    sum += digits[i];
+  }
+
+  *result = sum;
+  return 0;
 }
 
 int main(int argc, char *argv[]) {
@@ -74,8 +115,8 @@ int main(int argc, char *argv[]) {
       case ERR_OUT_OF_RANGE:
         fprintf(stderr, "Error: Input out of range. Max: %lu\n", ULONG_MAX);
         break;
-      case ERR_CONVERSION:
-        fprintf(stderr, "Error: Input could not be converted to 'unsigned long integer'\n");
+      case ERR_STRING:
+        fprintf(stderr, "Error: %s\n", strerror(errno));
         break;
       case ERR_TRAILING_CHARS:
         fprintf(stderr, "Error: Extra chars beyond number detected\n");
@@ -85,6 +126,18 @@ int main(int argc, char *argv[]) {
     return status;
   }
 
-  printf("input: %lu\n", n);
+  unsigned long result = 0;
+  
+  status = 0;
+  status = factorialDigitSum(n, &result);
+
+  if (status == ERR_BUFF_OVERFLOW) {
+    fprintf(stderr, "Error: Buffer overflow, use a smaller value\n");
+    return FAILURE;
+  }
+
+  printf("input:  %lu!\n", n);
+  printf("result: %lu\n", result);
+
   return SUCCESS;
 }
