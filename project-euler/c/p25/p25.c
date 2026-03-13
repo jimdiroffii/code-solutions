@@ -4,7 +4,7 @@
 
 int main()
 {
-    const char *a = "10^100000";
+    const char *a = "1";
     const char *b = "1";
 
     BigInt A = {0};
@@ -24,12 +24,17 @@ int main()
         return 1;
     }
 
-    if (!bi_add(&C, &A, &B))
+    for (int i = 0; i < 7; ++i)
     {
-        fprintf(stderr, "Addition failed\n");
-        bi_free(&A);
-        bi_free(&B);
-        return 1;
+        if (!bi_add(&C, &A, &B))
+        {
+            fprintf(stderr, "Addition failed\n");
+            bi_free(&A);
+            bi_free(&B);
+            return 1;
+        }
+        A = B;
+        B = C;
     }
 
     char *out = bi_to_string(&C);
